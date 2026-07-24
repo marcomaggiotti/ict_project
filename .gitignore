@@ -1,3 +1,9 @@
+# Node / JS (webapp, mobile-app)
+node_modules/
+dist/
+.expo/
+web-build/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

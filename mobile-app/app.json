@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "AI Agent Platform",
+    "slug": "ai-agent-mobile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {},
+    "web": { "bundler": "metro" }
+  }
+}
