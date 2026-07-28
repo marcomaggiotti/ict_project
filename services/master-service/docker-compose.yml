@@ -1,0 +1,17 @@
+# Standalone compose file for running/developing this service in isolation
+# (outside the top-level platform docker-compose.yml). Useful once this folder
+# is migrated to its own repository.
+#
+# WARNING: mounting /var/run/docker.sock gives this container full control over the host's
+# Docker daemon (equivalent to root on the host). Only run this on a trusted host, always set
+# API_KEY, and consider a read-only docker socket proxy (e.g. tecnativa/docker-socket-proxy) in
+# production instead of mounting the raw socket.
+services:
+  master-service:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro

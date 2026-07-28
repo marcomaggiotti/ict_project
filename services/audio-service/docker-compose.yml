@@ -1,0 +1,27 @@
+# Standalone compose file for running/developing this service in isolation
+# (outside the top-level platform docker-compose.yml). Useful once this folder
+# is migrated to its own repository.
+services:
+  audio-service:
+    build: .
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    environment:
+      DB_BACKEND: ${DB_BACKEND:-sqlite}
+
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: audio_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - audio_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  audio_postgres_data:

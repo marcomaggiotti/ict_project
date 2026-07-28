@@ -1,0 +1,125 @@
+# Top-level orchestration for the whole platform: 4 microservice AI agents + the web app,
+# all on one Docker network, backed by a local Postgres instance by default.
+#
+# Usage:
+#   cp .env.example .env   # then fill in secrets
+#   docker compose up --build
+#
+# Each service also has its own standalone docker-compose.yml (services/<name>/docker-compose.yml)
+# for running it in isolation - useful once a folder is migrated to its own repo (see MIGRATION.md).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks: [ai-agent-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  audio-service:
+    build: ./services/audio-service
+    container_name: ai-agent-audio-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVICE_NAME: audio-service
+      API_KEY: ${AUDIO_API_KEY:-}
+      DB_BACKEND: postgres
+      POSTGRES_URL: postgresql+psycopg2://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/audio_db
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+    ports:
+      - "8001:8000"
+    networks: [ai-agent-net]
+
+  image-service:
+    build: ./services/image-service
+    container_name: ai-agent-image-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVICE_NAME: image-service
+      API_KEY: ${IMAGE_API_KEY:-}
+      DB_BACKEND: postgres
+      POSTGRES_URL: postgresql+psycopg2://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/image_db
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+    ports:
+      - "8002:8000"
+    networks: [ai-agent-net]
+
+  calendar-service:
+    build: ./services/calendar-service
+    container_name: ai-agent-calendar-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVICE_NAME: calendar-service
+      API_KEY: ${CALENDAR_API_KEY:-}
+      DB_BACKEND: postgres
+      POSTGRES_URL: postgresql+psycopg2://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/calendar_db
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+    ports:
+      - "8003:8000"
+    networks: [ai-agent-net]
+
+  master-service:
+    build: ./services/master-service
+    container_name: ai-agent-master-service
+    depends_on:
+      - audio-service
+      - calendar-service
+      - image-service
+    environment:
+      SERVICE_NAME: master-service
+      API_KEY: ${MASTER_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+    ports:
+      - "8000:8000"
+    volumes:
+      # Grants this container control over the host's Docker daemon - see
+      # services/master-service/README.md for the security implications. Read-only mount
+      # still allows start/stop/restart via the Engine API.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks: [ai-agent-net]
+
+  webapp:
+    build: ./webapp
+    ports:
+      - "8080:80"
+    environment:
+      AUDIO_URL: http://localhost:8001
+      CALENDAR_URL: http://localhost:8003
+      IMAGE_URL: http://localhost:8002
+      MASTER_URL: http://localhost:8000
+    depends_on:
+      - audio-service
+      - calendar-service
+      - image-service
+      - master-service
+    networks: [ai-agent-net]
+
+networks:
+  ai-agent-net:
+
+volumes:
+  postgres_data:
