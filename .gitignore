@@ -222,3 +222,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude Code agent worktrees - transient checkouts created for isolated subagent
+# runs, removed when the agent finishes. Never part of the project.
+.claude/worktrees/
