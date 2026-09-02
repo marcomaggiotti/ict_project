@@ -15,6 +15,7 @@ see [`MIGRATION.md`](./MIGRATION.md).
 | `services/audio-service`        | AI agent microservice: store/manage audio files                          | 8001                     |
 | `services/image-service`        | AI agent microservice: store/manage image files                          | 8002                     |
 | `services/calendar-service`     | AI agent microservice: timeplans, calendar events, resource reservations | 8003                     |
+| `services/pizza-service`        | AI agent microservice: pizza dough recipes from a flour blend, technique, and pizza-chef/cookbook style | 8004 |
 | `services/master-service`       | Master AI agent: enables/disables/restarts the other services via Docker | 8000                     |
 | `webapp`                        | React + TypeScript dashboard for all of the above                        | 8080                     |
 | `mobile-app`                    | Expo (React Native + TypeScript) app mirroring the web dashboard          | n/a (installed on device)|
@@ -32,16 +33,16 @@ tomorrow 2-3pm", "turn off the image service").
                      │  (React/Vite) │        │ (Expo/RN)     │
                      └───────┬───────┘        └───────┬───────┘
                              │      REST + /agent/chat │
-              ┌──────────────┼──────────────┬──────────┘
-              ▼              ▼              ▼
-      ┌───────────────┐┌───────────────┐┌───────────────┐      ┌───────────────────┐
-      │ audio-service ││image-service  ││calendar-service│      │  master-service    │
-      │ (FastAPI)     ││(FastAPI)      ││(FastAPI)       │◄────►│  (FastAPI + Docker │
-      └───────┬───────┘└───────┬───────┘└───────┬───────┘      │   Engine API)      │
-              │                │                │              └─────────┬──────────┘
-              └────────────────┴────────────────┘                        │
-                       Postgres (Render-compatible)               controls container
-                       or Azure Cosmos DB, per service             start/stop/restart
+              ┌──────────────┼──────────────┬──────────┴───────┐
+              ▼              ▼              ▼                  ▼
+      ┌───────────────┐┌───────────────┐┌───────────────┐┌───────────────┐  ┌───────────────────┐
+      │ audio-service ││image-service  ││calendar-service││pizza-service  │  │  master-service    │
+      │ (FastAPI)     ││(FastAPI)      ││(FastAPI)       ││(FastAPI)      │◄►│  (FastAPI + Docker │
+      └───────┬───────┘└───────┬───────┘└───────┬───────┘└───────┬───────┘  │   Engine API)      │
+              │                │                │                │          └─────────┬──────────┘
+              └────────────────┴────────────────┴────────────────┘                    │
+                       Postgres (Render-compatible)                            controls container
+                       or Azure Cosmos DB, per service                          start/stop/restart
 ```
 
 ## Data backends
@@ -61,11 +62,20 @@ cp .env.example .env    # fill in ANTHROPIC_API_KEY and any API keys you want to
 docker compose up --build
 ```
 
-This starts a local Postgres (with one database per service), all four microservices, and
+This starts a local Postgres (with one database per service), all five microservices, and
 the web app, all on one Docker network. Open the web app at http://localhost:8080.
 
 Each service also has its own standalone `docker-compose.yml` for running/developing it in
 isolation - see that service's README.
+
+## Deploying a service to Render
+
+Each service folder is deployable on its own to [Render](https://render.com) - see e.g.
+`services/pizza-service/render.yaml`, a [Blueprint](https://render.com/docs/blueprint-spec)
+that builds the service's Dockerfile and provisions a free managed Postgres database for
+it. In the Render dashboard: **New -> Blueprint**, point at this repo, and set the root
+directory to the service's folder (e.g. `services/pizza-service`). See that service's
+README for the full walkthrough and which env vars to set after the first deploy.
 
 ## Running the mobile app
 
@@ -93,6 +103,7 @@ services/
   audio-service/       FastAPI AI agent - audio files
   image-service/        FastAPI AI agent - image files
   calendar-service/     FastAPI AI agent - calendar/reservations
+  pizza-service/        FastAPI AI agent - pizza dough recipes
   master-service/       FastAPI AI agent - orchestrator
 webapp/                 React + TypeScript dashboard
 mobile-app/              Expo (React Native) app

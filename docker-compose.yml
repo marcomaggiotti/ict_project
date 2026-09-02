@@ -80,6 +80,24 @@ services:
       - "8003:8000"
     networks: [ai-agent-net]
 
+  pizza-service:
+    build: ./services/pizza-service
+    container_name: ai-agent-pizza-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVICE_NAME: pizza-service
+      API_KEY: ${PIZZA_API_KEY:-}
+      DB_BACKEND: postgres
+      POSTGRES_URL: postgresql+psycopg2://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/pizza_db
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-*}
+    ports:
+      - "8004:8000"
+    networks: [ai-agent-net]
+
   master-service:
     build: ./services/master-service
     container_name: ai-agent-master-service
@@ -87,6 +105,7 @@ services:
       - audio-service
       - calendar-service
       - image-service
+      - pizza-service
     environment:
       SERVICE_NAME: master-service
       API_KEY: ${MASTER_API_KEY:-}

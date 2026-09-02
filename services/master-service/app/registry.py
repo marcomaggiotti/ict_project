@@ -14,6 +14,7 @@ DEFAULT_SERVICES: list[ManagedService] = [
     ManagedService(name="audio-service", container_name="ai-agent-audio-service", base_url="http://audio-service:8000"),
     ManagedService(name="calendar-service", container_name="ai-agent-calendar-service", base_url="http://calendar-service:8000"),
     ManagedService(name="image-service", container_name="ai-agent-image-service", base_url="http://image-service:8000"),
+    ManagedService(name="pizza-service", container_name="ai-agent-pizza-service", base_url="http://pizza-service:8000"),
 ]
 
 

@@ -5,7 +5,7 @@
 # Render Postgres instances).
 set -euo pipefail
 
-for db in audio_db calendar_db image_db; do
+for db in audio_db calendar_db image_db pizza_db; do
   psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     SELECT 'CREATE DATABASE $db' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$db')\gexec
 EOSQL

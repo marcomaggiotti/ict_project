@@ -24,7 +24,8 @@ git remote remove audio-service-origin
 ```
 
 Repeat with `--prefix=services/calendar-service`, `--prefix=services/image-service`,
-`--prefix=services/master-service`, `--prefix=webapp`, `--prefix=mobile-app`.
+`--prefix=services/pizza-service`, `--prefix=services/master-service`, `--prefix=webapp`,
+`--prefix=mobile-app`.
 
 ## Option B - plain copy (no history)
 
@@ -57,6 +58,7 @@ git push -u origin main
 | `services/audio-service`      | `ai-agent-audio-service`     |
 | `services/calendar-service`   | `ai-agent-calendar-service`  |
 | `services/image-service`      | `ai-agent-image-service`     |
+| `services/pizza-service`      | `ai-agent-pizza-service`     |
 | `services/master-service`     | `ai-agent-master-service`    |
 | `webapp`                      | `ai-agent-webapp`            |
 | `mobile-app`                  | `ai-agent-mobile-app`        |
