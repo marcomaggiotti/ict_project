@@ -130,10 +130,12 @@ services:
       CALENDAR_URL: http://localhost:8003
       IMAGE_URL: http://localhost:8002
       MASTER_URL: http://localhost:8000
+      PIZZA_URL: http://localhost:8004
     depends_on:
       - audio-service
       - calendar-service
       - image-service
+      - pizza-service
       - master-service
     networks: [ai-agent-net]
 

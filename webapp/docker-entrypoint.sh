@@ -8,7 +8,8 @@ set -eu
 : "${CALENDAR_URL:=http://localhost:8003}"
 : "${IMAGE_URL:=http://localhost:8002}"
 : "${MASTER_URL:=http://localhost:8000}"
+: "${PIZZA_URL:=http://localhost:8004}"
 
-envsubst '${AUDIO_URL} ${CALENDAR_URL} ${IMAGE_URL} ${MASTER_URL}' \
+envsubst '${AUDIO_URL} ${CALENDAR_URL} ${IMAGE_URL} ${MASTER_URL} ${PIZZA_URL}' \
   < /usr/share/nginx/html/config.template.js \
   > /usr/share/nginx/html/config.js

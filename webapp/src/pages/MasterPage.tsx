@@ -32,7 +32,8 @@ export function MasterPage() {
 
   return (
     <div className="page">
-      <h1>Master Control</h1>
+      <h1>Head Chef</h1>
+      <p className="muted">Every station on the pass, and the switch that opens or closes it.</p>
       {error && <p className="error">{error}</p>}
       <table>
         <thead>
@@ -48,7 +49,12 @@ export function MasterPage() {
             return (
               <tr key={item.name}>
                 <td>{item.name}</td>
-                <td className={running ? "status-up" : "status-down"}>{item.status}</td>
+                <td>
+                  <span className={`status-pill ${running ? "status-online" : "status-offline"}`}>
+                    <span className="status-dot" aria-hidden="true" />
+                    <span className="status-state">{item.status}</span>
+                  </span>
+                </td>
                 <td>
                   <button onClick={() => toggle(item.name, running)}>{running ? "Disable" : "Enable"}</button>
                   <button onClick={() => masterApi.restart(item.name).then(refresh)}>Restart</button>
@@ -66,7 +72,7 @@ export function MasterPage() {
         </tbody>
       </table>
 
-      <h2>Agent</h2>
+      <h2>Ask the Head Chef</h2>
       <ChatPanel chat={masterApi.chat} placeholder="turn off the image service" />
     </div>
   );

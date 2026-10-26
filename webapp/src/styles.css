@@ -1,47 +1,201 @@
+/* MasterChef-style kitchen theme: deep apron navy, brass trim, a warm service floor. */
 :root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color-scheme: light;
+
+  --apron: #10172a;
+  --apron-soft: #1b2440;
+  --brass: #d6a338;
+  --brass-bright: #f0c25c;
+  --floor: #f6f1e7;
+  --card: #ffffff;
+  --ink: #1f2430;
+  --ink-soft: #6b7183;
+  --rule: #e4dccd;
+
+  --go: #2f9e5e;
+  --wait: #c98a1b;
+  --stop: #d8453c;
+  --unknown: #a7adbb;
+
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  color: var(--ink);
 }
 
 body {
   margin: 0;
+  background: var(--floor);
 }
 
+/* ---------- Header / brand ---------- */
+
 .navbar {
+  background: var(--apron);
+  color: #fff;
+  border-bottom: 3px solid var(--brass);
+}
+
+.navbar-top {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #8884;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
 }
 
 .brand {
-  font-weight: 700;
-}
-
-.nav-links {
   display: flex;
-  gap: 1rem;
-}
-
-.nav-links a {
+  align-items: center;
+  gap: 0.75rem;
+  color: inherit;
   text-decoration: none;
-  opacity: 0.7;
 }
 
-.nav-links a.active {
-  opacity: 1;
+.brand-toque {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--brass);
+  font-size: 1.25rem;
+}
+
+.brand-words {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass-bright);
+}
+
+/* ---------- Traffic-light service pills ---------- */
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--unknown);
+  flex: none;
+}
+
+.status-online .status-dot {
+  background: var(--go);
+}
+
+.status-degraded .status-dot {
+  background: var(--wait);
+}
+
+.status-offline .status-dot {
+  background: var(--stop);
+}
+
+.status-name {
+  color: var(--ink);
   font-weight: 600;
 }
 
+.status-state {
+  color: var(--ink-soft);
+}
+
+/* ---------- Nav ---------- */
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0 1rem;
+  background: var(--apron-soft);
+}
+
+.nav-links a {
+  padding: 0.65rem 1rem;
+  color: #cfd4e4;
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a.active {
+  color: #fff;
+  font-weight: 700;
+  border-bottom-color: var(--brass);
+}
+
+/* ---------- Page ---------- */
+
 .page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1.5rem;
+  max-width: 980px;
+  margin: 1.5rem auto;
+  padding: 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(16, 23, 42, 0.06);
+}
+
+.page h1 {
+  margin-top: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.04em;
+}
+
+.page h1::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-top: 0.5rem;
+  background: var(--brass);
+}
+
+.page h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  margin-top: 2rem;
 }
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -53,32 +207,73 @@ body {
   margin-bottom: 1rem;
 }
 
+button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--apron);
+  border-radius: 999px;
+  background: var(--apron);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--apron-soft);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+th {
   text-align: left;
   padding: 0.5rem;
-  border-bottom: 1px solid #8884;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--rule);
+}
+
+td {
+  text-align: left;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
 }
 
 .muted {
-  opacity: 0.6;
+  color: var(--ink-soft);
 }
 
 .error {
-  color: #d33;
+  color: var(--stop);
 }
 
 .status-up {
-  color: #2a7;
+  color: var(--go);
+  font-weight: 600;
 }
 
 .status-down {
-  color: #d33;
+  color: var(--stop);
+  font-weight: 600;
 }
 
 .image-grid {
@@ -92,13 +287,16 @@ td {
   width: 100%;
   height: 120px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
 }
 
 .chat-panel {
-  border: 1px solid #8884;
-  border-radius: 8px;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--brass);
+  border-radius: 10px;
   padding: 1rem;
+  background: #fffdf8;
 }
 
 .chat-history {
@@ -117,4 +315,15 @@ td {
 
 .chat-panel input {
   flex: 1;
+}
+
+@media (max-width: 640px) {
+  .navbar-top {
+    padding: 0.75rem 1rem;
+  }
+
+  .page {
+    margin: 0.75rem;
+    padding: 1.1rem;
+  }
 }

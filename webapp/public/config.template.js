@@ -5,4 +5,5 @@ window.__ENV__ = {
   CALENDAR_URL: "${CALENDAR_URL}",
   IMAGE_URL: "${IMAGE_URL}",
   MASTER_URL: "${MASTER_URL}",
+  PIZZA_URL: "${PIZZA_URL}",
 };

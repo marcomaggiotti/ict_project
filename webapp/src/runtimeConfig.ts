@@ -16,4 +16,5 @@ export const config = {
   calendarUrl: readEnv("CALENDAR_URL", "VITE_CALENDAR_URL", "http://localhost:8003"),
   imageUrl: readEnv("IMAGE_URL", "VITE_IMAGE_URL", "http://localhost:8002"),
   masterUrl: readEnv("MASTER_URL", "VITE_MASTER_URL", "http://localhost:8000"),
+  pizzaUrl: readEnv("PIZZA_URL", "VITE_PIZZA_URL", "http://localhost:8004"),
 };
